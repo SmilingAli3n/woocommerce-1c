@@ -115,7 +115,7 @@ function wc1c_set_output_callback() {
   ob_start('wc1c_output_callback');
 }
 
-function wc1c_strict_error_handler($errno, $errstr, $errfile, $errline, $errcontext) {
+function wc1c_strict_error_handler($errno, $errstr, $errfile, $errline, $errcontext=null) {
   if (error_reporting() === 0) return false;
 
   switch ($errno) {
@@ -153,6 +153,9 @@ function wc1c_fix_fastcgi_get() {
 }
 
 function wc1c_cleanup_dir($path_dir) {
+  $path_dir = preg_replace("/\\\\|\//", DIRECTORY_SEPARATOR, $path_dir);
+  if(file_exists($path_dir) === false)
+    mkdir($path_dir); 
   $files = array_diff(scandir($path_dir), array('.', '..'));
   foreach ($files as $file) {
     $path = "$path_dir/$file";
